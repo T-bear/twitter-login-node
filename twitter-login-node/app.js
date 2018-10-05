@@ -2,6 +2,7 @@ var express           =     require('express')
   , passport          =     require('passport')
   , util              =     require('util')
   , TwitterStrategy   =     require('passport-twitter').Strategy
+  , FacebookStrategy  =     require('passport-facebook').Strategy   
   , session           =     require('express-session')
   , cookieParser      =     require('cookie-parser')
   , bodyParser        =     require('body-parser')
