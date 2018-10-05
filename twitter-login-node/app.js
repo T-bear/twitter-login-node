@@ -40,7 +40,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new TwitterStrategy({
     consumerKey: config.twitter_api_key,
     consumerSecret:config.twitter_api_secret ,
-    callbackURL: config.callback_url
+    callbackURL: config.callback_urlt
   },
   function(token, tokenSecret, profile, done) {
     process.nextTick(function () {
@@ -68,7 +68,7 @@ passport.use(new TwitterStrategy({
 passport.use(new FacebookStrategy({
     clientID: config.facebook_api_key,
     clientSecret:config.facebook_api_secret ,
-    callbackURL: config.callback_url
+    callbackURL: config.callback_urlf
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
@@ -120,14 +120,13 @@ app.get('/auth/twitter/callback',
   });
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
+
 app.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { 
-       successRedirect : '/', 
-       failureRedirect: '/login' 
-  }),
+  passport.authenticate('facebook', { successRedirect : '/', failureRedirect: '/login' }),
   function(req, res) {
     res.redirect('/');
   });
+
 app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
