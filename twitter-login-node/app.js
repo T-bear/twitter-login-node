@@ -2,7 +2,8 @@ var express           =     require('express')
   , passport          =     require('passport')
   , util              =     require('util')
   , TwitterStrategy   =     require('passport-twitter').Strategy
-  , FacebookStrategy  =     require('passport-facebook').Strategy   
+  , FacebookStrategy  =     require('passport-facebook').Strategy
+  , GoogleStrategy    =     require('passport-google-oauth').OAuthStrategy
   , session           =     require('express-session')
   , cookieParser      =     require('cookie-parser')
   , bodyParser        =     require('body-parser')
@@ -93,6 +94,18 @@ passport.use(new FacebookStrategy({
   }
 ));
 
+passport.use(new GoogleStrategy({
+    consumerKey: GOOGLE_CONSUMER_KEY,
+    consumerSecret: GOOGLE_CONSUMER_SECRET,
+    callbackURL: "http://x00.se:1980/auth/google/callback"
+  },
+  function(token, tokenSecret, profile, done) {
+      User.findOrCreate({ googleId: profile.id }, function (err, user) {
+        return done(err, user);
+      });
+  }
+));
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(cookieParser());
@@ -127,6 +140,15 @@ app.get('/auth/facebook/callback',
     res.redirect('/');
   });
 
+app.get('/auth/google',
+  passport.authenticate('google', { scope: 'https://www.google.com/m8/feeds' });
+
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+  });        
+        
 app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
